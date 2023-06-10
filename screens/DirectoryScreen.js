@@ -1,11 +1,14 @@
 import { FlatList } from "react-native";
 import { Avatar, ListItem } from "react-native-elements";
+import { useState } from 'react';
+import { TRAILS } from '../shared/trails';
 
-const DirectoryScreen = (props) => {
+const DirectoryScreen = ({ navigation }) => {
+    const [ trails, setTrails ] = useState(TRAILS);
     
     const renderDirectoryItem = ({ item: trail }) => {
         return (
-            <ListItem onPress={() => props.onPress(trail.id)}>
+            <ListItem onPress={() => navigation.navigate('TrailInfo', {trail})}>
                 <Avatar 
                     source={trail.image}
                     rounded
@@ -21,7 +24,7 @@ const DirectoryScreen = (props) => {
     
     return (
         <FlatList 
-            data={props.trails}
+            data={trails}
             renderItem={renderDirectoryItem}
             keyExtractor={(item) => item.id.toString()}
         />
