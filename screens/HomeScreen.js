@@ -1,22 +1,68 @@
-import { View, Text, Image, Button, StyleSheet, Modal } from 'react-native';
+import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
+import { Card, Tile, Overlay, Input } from 'react-native-elements';
+import Icon from 'react-native-elements';
 import jumbotron from '../assets/images/jumbotron/jumbotronImage1.jpg';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+import Loading from '../components/Loading';
+
+const FeaturedTrail = (props) => {
+    const { trail } = props;
+
+    if (props.isLoading) {
+        return (
+            <Loading />
+        )
+    }
+
+    if (props.errMess) {
+        return (
+            <View>
+                <Text>{props.errMess}</Text>
+            </View>
+        )
+    }
+
+    if (trail && trail.featured) {
+        return (
+            <Card containerStyle={{ padding: 0 }}>
+                <Card.Title style={{ fontSize: 16, textDecorationLine: 'underline' }}>{trail.name}</Card.Title>
+                <Card.Divider />
+                <Card.Image source={{ uri: baseUrl + trail.image }} />
+                <Text style={{ margin: 10 }}>
+                    {trail.description}
+                </Text>
+            </Card>
+        )
+    }
+    return <View />
+}
 
 const HomeScreen = () => {
-    const [showModal, setShowModal] = useState(false);
+    const trails = useSelector(state => state.trails);
+    const [ showModal, setShowModal ] = useState(false);
+
+    const featTrails = trails.trailsArray.filter(trail => trail.featured);
 
     return (
-        <View>
+        <ScrollView>
             <View style={styles.homeContainer}>
-                <Image
-                    source={jumbotron}
-                    style={styles.jumbotron}
+                <Tile 
+                    imageSrc={jumbotron}
+                    title="Find My Trail"
+                    featured
+                    caption="Discover Your Path"
+                    titleStyle={styles.jumbotronText}
+                    captionStyle={{ 
+                        fontSize: 20, 
+                        backgroundColor: 'rgba(0, 0, 0, 0.9)', 
+                        padding: 10, 
+                        color: '#f9f9f9',
+                        borderRadius: 5
+                    }}
+                    activeOpacity={1}
                 />
-                <Text style={styles.jumbotronText}>Find My Trail</Text>
-                <Text 
-                    style={{ fontSize: 20, position: 'absolute', backgroundColor: 'rgba(0, 0, 0, 0.8)', padding: 10, color: '#f9f9f9', top: 180 }}
-                        
-                >Discover Your Path</Text>
             </View>
             <View
                 style={{ backgroundColor: '#008024', height: 50, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 30 }}
@@ -28,27 +74,45 @@ const HomeScreen = () => {
                     onPress={() => setShowModal(!showModal)}
                 />
             </View>
-            <Modal
-                animationType="slide"
-                transparent={false}
-                visible={showModal}
-                onRequestClose={() => setShowModal(!showModal)}
+            <View style={{ alignItems: 'center', flex: 1 }}>
+                <Text style={{ fontSize: 24, marginTop: 10 }}>Featured Trails</Text>
+                {featTrails.map(trail => (
+                    <FeaturedTrail 
+                        key={trail.id}
+                        trail={trail}
+                        isLoading={trails.isLoading}
+                        errMess={trails.errMess}
+                    />
+                ))}
+            </View>
+            <Overlay
+                onBackdropPress={() => setShowModal(!showModal)}
+                isVisible={showModal}
+                overlayStyle={{ backgroundColor: '#fff', borderRadius: 5, marginHorizontal: 20 }}
+                backdropStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}
             >
                 <View style={styles.modal}>
                     <Text style={styles.modalTitle}>
                         Sign up for our newsletter and we'll send you information about our latest features and updates.
                     </Text>
-                    <Text style={styles.modalText}>
-                        Email: 
-                    </Text>
-                    <Button
-                        onPress={() => setShowModal(!showModal)}
-                        title="Close"
-                        color="red"
+                    <Input
+                        placeholder='Email Address'
                     />
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <Button
+                            onPress={() => setShowModal(!showModal)}
+                            title="Close"
+                            color="gray"
+                        />
+                        <Button
+                            onPress={() => setShowModal(!showModal)}
+                            title="Submit"
+                            color="green"
+                        />
+                    </View>
                 </View>
-            </Modal>
-        </View>
+            </Overlay>
+        </ScrollView>
     )
 }
 
@@ -60,7 +124,6 @@ const styles = StyleSheet.create({
     homeContainer: {
         width: "100%",
         alignItems: 'center',
-        position: 'relative'
     },
     jumbotron: {
         width: 450,
@@ -69,27 +132,26 @@ const styles = StyleSheet.create({
     },
     jumbotronText: {
         fontSize: 50,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        backgroundColor: 'rgba(0, 0, 0, 0.9)',
         padding: 20,
         color: 'white',
-        position: 'absolute',
-        top: 65
+        borderRadius: 8
     },
     modal: {
         justifyContent: 'center',
-        margin: 20
+        margin: 20,
+        padding: 10
     },
     modalText: {
-        fontSize: 18,
+        fontSize: 12,
         margin: 10,
         padding: 10
     },
     modalTitle: {
-        fontSize: 24,
+        fontSize: 18,
         fontWeight: 'bold',
-        backgroundColor: '#008024',
         textAlign: 'center',
-        color: '#fff',
+        color: 'black',
         marginBottom: 20,
         padding: 10,
         borderRadius: 10

@@ -1,11 +1,12 @@
 import { Text, View } from 'react-native';
 import { Card } from 'react-native-elements';
+import { baseUrl } from '../../shared/baseUrl';
 
 const RenderTrail = ({ trail }) => {
     if (trail) {
         return (
             <Card containerStyle={{ padding: 0 }}>
-                <Card.Image source={trail.image}>
+                <Card.Image source={{ uri: baseUrl + trail.image }}>
                     <View style={{ justifyContent:'center', flex:1 }}>
                         <Text style={{ color: 'white', textAlign:'center', fontSize: 20 }}>
                             {trail.name}

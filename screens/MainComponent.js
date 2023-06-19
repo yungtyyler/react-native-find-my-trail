@@ -1,14 +1,15 @@
-import { useState } from 'react';
 import { View, Platform, StyleSheet, Text, Image } from 'react-native';
 import { Icon } from 'react-native-elements';
 import logo from '../assets/images/logo.png';
 import Constants from 'expo-constants';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import { TRAILS } from '../shared/trails';
 import DirectoryScreen from './DirectoryScreen';
 import TrailInfoScreen from './TrailInfoScreen';
 import HomeScreen from './HomeScreen';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchTrails } from '../features/trails/trailsSlice';
 
 const Drawer = createDrawerNavigator();
 const screenOptions = {
@@ -85,6 +86,12 @@ const CustomDrawerContent = (props) => {
 }
 
 const Main = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchTrails());
+    }, [dispatch]);
+
     return (
         <View style={{ flex:1, paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight }}>
             <Drawer.Navigator
