@@ -143,6 +143,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         margin: 10,
         textAlign: 'center'
+    },
+    stackIcon: {
+        marginLeft: 10,
+        color: '#fff',
+        fontSize: 24
     }
 })
 
