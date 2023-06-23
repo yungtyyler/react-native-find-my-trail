@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { trailsReducer } from '../features/trails/trailsSlice';
+import { commentsReducer } from '../features/comments/commentsSlice';
 import { persistStore, persistCombineReducers, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -11,7 +12,8 @@ const config = {
 
 export const store = configureStore({
     reducer: persistCombineReducers(config,{
-        trails: trailsReducer
+        trails: trailsReducer,
+        comments: commentsReducer
     }),
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: {
