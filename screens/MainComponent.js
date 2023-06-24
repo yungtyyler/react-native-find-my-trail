@@ -10,6 +10,7 @@ import HomeScreen from './HomeScreen';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { fetchTrails } from '../features/trails/trailsSlice';
+import { fetchComments } from '../features/comments/commentsSlice';
 
 const Drawer = createDrawerNavigator();
 const screenOptions = {
@@ -90,6 +91,7 @@ const Main = () => {
 
     useEffect(() => {
         dispatch(fetchTrails());
+        dispatch(fetchComments());
     }, [dispatch]);
 
     return (
